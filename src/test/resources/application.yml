@@ -1,0 +1,51 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/fileStorage
+    username: postgres
+    password: postgres
+
+files:
+  inboxPath: /Maground/inbox
+  storePath: /Maground/store
+  rootFolder: inbox
+  loader:
+    schedule:
+      fixedRate: 100000000
+
+server:
+  port: 8083
+
+ffmpeg:
+  probe:
+    exe:  ffprobe
+  ffmpeg:
+    exe:  ffmpeg
+
+---
+spring:
+  profiles: zonen-stand
+  datasource:
+    url: jdbc:postgresql://localhost:5432/file_storage
+    username: misha
+    password: Ph0t0$
+
+  ffmpeg:
+    probe:
+      exe:  /var/home/mzonenac/ffmpeg/ffprobe
+    ffmpeg:
+      exe:  /var/home/mzonenac/ffmpeg/ffmpeg
+
+server:
+  port: 4980
+
+files:
+  inboxPath: /var/home/mzonenac/video-store/dev/inbox
+  storePath: /var/home/mzonenac/video-store/dev/video/storage
+  rootFolder: storage

@@ -1,0 +1,79 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/fileStorage
+    username: postgres
+    password: postgres
+
+logging:
+  file: loader.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss}  %-5level [%logger] %msg%n"
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){yellow}  %clr(%5p) [%clr(%logger){blue}] %msg%n"
+
+files:
+  inboxPath: /media/vzuev/Elements/Фото
+  storePath: /tmp/photo
+  rootFolder: inbox
+  loader:
+    schedule:
+      fixedRate: 100000000
+
+server:
+  port: 8083
+
+ffmpeg:
+  probe:
+    exe:  ffprobe
+  ffmpeg:
+    exe:  ffmpeg
+
+---
+spring:
+  profiles: zonen-stand
+  datasource:
+    url: jdbc:postgresql://localhost:5432/file_storage
+    username: misha
+    password: Ph0t0$
+
+ffmpeg:
+  probe:
+    exe:  /var/home/mzonenac/ffmpeg/ffprobe
+  ffmpeg:
+    exe:  /var/home/mzonenac/ffmpeg/ffmpeg
+
+server:
+  port: 4980
+
+files:
+  inboxPath: /var/home/mzonenac/video-store/dev/inbox
+  storePath: /var/home/mzonenac/video-store/dev/video/storage
+  rootFolder: inbox
+
+---
+spring:
+  profiles: docker
+  datasource:
+    url: jdbc:postgresql://pg.maground.local:5432/file_storage
+    username: ayk
+    password: Ph0t0$
+
+ffmpeg:
+  probe:
+    exe:  /usr/bin/ffprobe
+  ffmpeg:
+    exe:  /usr/bin/ffmpeg
+
+server:
+  port: 4980
+
+files:
+  inboxPath: /fs/inbox
+  storePath: /fs/storage
+  rootFolder: inbox
