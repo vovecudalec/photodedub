@@ -59,6 +59,7 @@ public class FileLoaderImpl implements FileLoader {
 
     // хэш загруженных файлов
     HashSet<String> imagesMDs = new HashSet<String>();
+    int dublesCount = 0;
 
     @Override
     public void loadFoldersHierarchy(String path) throws IOException {
@@ -91,6 +92,7 @@ public class FileLoaderImpl implements FileLoader {
                                 imagesMDs.add(md5);
                             } else {
                                 logger.warn("Обраружен дубль для файла {} ", file.toString());
+                                dublesCount++;
                             }
                         } catch (ImageProcessingException | IOException e) {
                             logger.error("Error with file " + file.toString(), e);
@@ -167,6 +169,8 @@ public class FileLoaderImpl implements FileLoader {
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(STORE_PATH + File.separator + "loaded.hash"));
         out.writeObject(imagesMDs);
         out.close();
+
+        logger.info("Сортировка завершена. \nДублей найдено: {}", dublesCount);
     }
 
 
