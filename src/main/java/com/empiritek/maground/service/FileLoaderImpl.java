@@ -10,6 +10,7 @@ import com.empiritek.maground.repository.FolderMetadataRepository;
 import com.empiritek.maground.service.extradata.ExtraDataLoaderService;
 import com.empiritek.maground.service.thumbnail.FileConversionService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,9 +84,13 @@ public class FileLoaderImpl implements FileLoader {
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                             throws IOException {
 
+                        if(!FilenameUtils.getExtension(file.toString()).equalsIgnoreCase("jpg")){
+                            logger.info("Пропускаем {}", file.toString());
+                            return FileVisitResult.CONTINUE;
+                        }
 
                         try {
-                            ImageMetadataReader.readMetadata(file.toFile());
+//                            ImageMetadataReader.readMetadata(file.toFile());
                             String md5 = getMd5(file);
                             if (!imagesMDs.contains(md5)) {
                                 copyFile(file);
@@ -175,7 +180,12 @@ public class FileLoaderImpl implements FileLoader {
 
 
     private String getMd5(Path path) throws IOException {
-        return DigestUtils.md5DigestAsHex(Files.newInputStream(path));
+        String md5;
+        try(InputStream inputStream = Files.newInputStream(path)){
+            md5 = DigestUtils.md5DigestAsHex(inputStream);
+        }
+
+        return md5;
     }
 
     private void logLoadingMessage(String path, String message) throws IOException {
